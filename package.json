@@ -1,0 +1,22 @@
+{
+  "name": "packhacks",
+  "version": "1.0.0",
+  "description": "We followed the guide at https://discordjs.guide/preparations/.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DungeonMaestro215/PackHacks.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DungeonMaestro215/PackHacks/issues"
+  },
+  "homepage": "https://github.com/DungeonMaestro215/PackHacks#readme",
+  "dependencies": {
+    "discord.js": "^12.5.1"
+  }
+}
