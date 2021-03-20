@@ -15,24 +15,29 @@ module.exports = {
     cooldown: 5,
     guildOnly: false,
     execute(msg, args) {
-        // If the user doesn't have a spot, add one
+        // If the user doesn't have a spot, make one
         if (!users[msg.author]) {
             users[msg.author] = {};
         }
 
+        // Do Not Disturb?
         users[msg.author]["dnd"] = args.includes("dnd");
 
-        args.filter(element => element !== "dnd");
+        // Remove 'dnd' string if there is one
+        args = args.filter(element => element !== "dnd");
 
-        users[msg.author]["status"] = args[0];
+        // Set user's status
+        users[msg.author]["status"] = args.join(" ");   // Allow sentences for status
 
-        let data = JSON.stringify(users, null, 2);
+        let data = JSON.stringify(users, null, 2);      // Nicely formate the json file (can be removed later)
 
+        // Write to the file
         fs.writeFile(filename, data, (err) => {
             if (err) throw err;
             console.log("Data written to file");
         });
 
+        // Check if it worked (can also be removed later)
         fs.readFile(filename, (err, data) => {
             if (err) throw err;
             let users = JSON.parse(data);
