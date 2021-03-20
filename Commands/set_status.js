@@ -8,7 +8,7 @@ module.exports = {
     alias: ['set_Status', 'Set_status', 'Set_Status'],
     description: 'Sets your status',
     args: true,
-    usage: '<status name>',
+    usage: '<status name> <dnd: optional>',
     cooldown: 5,
     guildOnly: false,
     execute(msg, args) {
@@ -16,7 +16,7 @@ module.exports = {
         if (!users[msg.author]) {
             users[msg.author] = {};
         }
-        users[msg.author]["status"] = args[0];
+        users[msg.author]["status"][args.contains("dnd")] = args[0];
 
         console.log(users);
     }
