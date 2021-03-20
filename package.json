@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/DungeonMaestro215/PackHacks#readme",
   "dependencies": {
-    "discord.js": "^12.5.1"
+    "console": "^0.7.2",
+    "discord.js": "^12.5.1",
+    "fs": "0.0.1-security"
   }
 }

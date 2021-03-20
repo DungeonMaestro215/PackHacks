@@ -2,6 +2,7 @@
 // Basic layout of a command.
 module.exports = {
     name: 'ping',
+    alias: ['Ping'],
     description: 'Ping!',
     args: false,
     usage: '<arguments>',
