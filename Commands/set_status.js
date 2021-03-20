@@ -1,10 +1,8 @@
-// set status
-// 
-
 // const users = require('../users.json');
 const fs = require('fs');
 const filename = "./users.json";
 
+// set status of user
 module.exports = {
     name: 'set_status',
     alias: ['set_Status', 'Set_status', 'Set_Status'],
