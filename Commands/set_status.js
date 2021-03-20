@@ -3,7 +3,6 @@
 
 // const users = require('../users.json');
 const fs = require('fs');
-const users = {};
 const filename = "./users.json";
 
 module.exports = {
@@ -15,19 +14,23 @@ module.exports = {
     cooldown: 5,
     guildOnly: false,
     execute(msg, args) {
+        // Read users file
+        let users = fs.readFileSync(filename);
+        users = JSON.parse(users);
+
         // If the user doesn't have a spot, make one
-        if (!users[msg.author]) {
-            users[msg.author] = {};
+        if (!users[msg.author.id]) {
+            users[msg.author.id] = {};
         }
 
         // Do Not Disturb?
-        users[msg.author]["dnd"] = args.includes("dnd");
+        users[msg.author.id]["dnd"] = args.includes("dnd");
 
         // Remove 'dnd' string if there is one
         args = args.filter(element => element !== "dnd");
 
         // Set user's status
-        users[msg.author]["status"] = args.join(" ");   // Allow sentences for status
+        users[msg.author.id]["status"] = args.join(" ");   // Allow sentences for status
 
         let data = JSON.stringify(users, null, 2);      // Nicely formate the json file (can be removed later)
 
@@ -35,13 +38,6 @@ module.exports = {
         fs.writeFile(filename, data, (err) => {
             if (err) throw err;
             console.log("Data written to file");
-        });
-
-        // Check if it worked (can also be removed later)
-        fs.readFile(filename, (err, data) => {
-            if (err) throw err;
-            let users = JSON.parse(data);
-            console.log(users);
         });
 
         // msg.author.setActivity(args[0], { type: "PLAYING" });
