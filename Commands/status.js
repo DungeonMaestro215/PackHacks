@@ -15,13 +15,21 @@ module.exports = {
         let users = fs.readFileSync(filename);
         users = JSON.parse(users);
 
+        // console.log(msg.channel.members.find(user => user.user.username == args[0] || user.nickname == args[0]));
+        // console.log("Members: ");
+        // console.log(msg.channel.members);
+        // console.log(Object.keys(msg.channel.members));
+        // console.log(msg.channel.members.get('85047986727424000').nickname);
+
         try {
-            let id = msg.channel.client.users.cache.find(user => user.username == args[0]).id;
+            let id = msg.channel.members.find(user => user.user.username == args[0] || user.nickname == args[0]).id;
             if (users[id]) {
                 msg.channel.send(users[id]["status"]);
+            } else {
+                msg.channel.send("There is no status for that user.");
             }
         } catch (e) {
-            msg.channel.send("There is no status for that user. Check your spelling.");
+            msg.channel.send("That user does not exist. Check your spelling.");
         }
     }
 }
