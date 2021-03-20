@@ -1,6 +1,7 @@
 // status
 // displays the status of a specefied user
 
+const fs = require('fs');
 const filename = "./users.json";
 
 module.exports = {
