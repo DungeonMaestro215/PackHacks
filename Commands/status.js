@@ -1,5 +1,8 @@
 // status
 // displays the status of a specefied user
+
+const filename = "./users.json";
+
 module.exports = {
     name: 'status',
     alias: ['Status'],
@@ -14,7 +17,7 @@ module.exports = {
             if (err) throw err;
             users = JSON.parse(data);
         });
-        if(users[msg.author]) {
+        if(users[client.user.get('name', args[0]).id]) {
             msg.channel.send(users[msg.author]["status"]);
         }
     }
