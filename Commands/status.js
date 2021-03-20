@@ -17,7 +17,7 @@ module.exports = {
             if (err) throw err;
             users = JSON.parse(data);
         });
-        if(users[client.user.get('name', args[0]).id]) {
+        if(users[msg.channel.client.user.get('name', args[0]).id]) {
             msg.channel.send(users[msg.author]["status"]);
         }
     }
