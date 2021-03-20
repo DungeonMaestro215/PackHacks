@@ -15,12 +15,6 @@ module.exports = {
         let users = fs.readFileSync(filename);
         users = JSON.parse(users);
 
-        // console.log(msg.channel.members.find(user => user.user.username == args[0] || user.nickname == args[0]));
-        // console.log("Members: ");
-        // console.log(msg.channel.members);
-        // console.log(Object.keys(msg.channel.members));
-        // console.log(msg.channel.members.get('85047986727424000').nickname);
-
         try {
             let id = msg.channel.members.find(user => user.user.username == args[0] || user.nickname == args[0]).id;
             if (users[id]) {
