@@ -1,8 +1,8 @@
 // set status
 // 
 module.exports = {
-    name: 'set status',
-    alias: ['set Status', 'Set status', 'Set Status'],
+    name: 'set_status',
+    alias: ['set_Status', 'Set_status', 'Set_Status'],
     description: 'Sets your status',
     args: true,
     usage: '<status name>',
