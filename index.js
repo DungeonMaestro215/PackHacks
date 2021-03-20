@@ -21,12 +21,12 @@ client.once('ready', () => {
 });
 
 // Read every message and respond when appropriate
-client.on('message', msg => {
-    if (msg.content.startsWith(prefix) || msg.author.bot) return;
+// client.on('message', msg => {
+//     if (msg.content.startsWith(prefix) || msg.author.bot) return;
 
-    // Anything that isn't specifically a command can go here.
+//     // Anything that isn't specifically a command can go here.
     
-});
+// });
 
 // Commands
 client.on('message', msg => {
