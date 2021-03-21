@@ -23,7 +23,7 @@ module.exports = {
             let counter = 0;
             events.forEach(event => {
                 sched[event].forEach(occurance => {
-                    output += counter + ": " + event + " on " + occurance.day + " from " + occurance.start + " to " + occurance.end + "\n";
+                    output += counter + ": " + event + " on " + occurance.day + " from " + convertToTimeString(occurance.start) + " to " + convertToTimeString(occurance.end) + "\n";
                     counter++;
                 });
             });
@@ -45,6 +45,42 @@ module.exports = {
             });
         });
 
-        console.log(enumeration);
+        sched[enumeration[args[0]].name].splice([enumeration[args[0]].index], 1);
+        msg.channel.send('Successfully deleted event.');
+
+
+        const data = JSON.stringify(users, null, 2);      // Nicely formate the json file (can be removed later)
+        // Write to the file
+        fs.writeFile(filename, data, (err) => {
+            if (err) throw err;
+            console.log("Data written to file");
+        });
     }
+}
+
+let convertToTimeString = function(time) {
+    let pm = false, formattedTime = time;
+
+    if (formattedTime > 1299) {
+        formattedTime -= 1200;
+        pm = true;
+    }
+
+    formattedTime = formattedTime.toString();
+
+    console.log(formattedTime.length);
+    if (formattedTime.length == 3) {
+        formattedTime = formattedTime.substring(0,1) + ':' + formattedTime.substring(1);
+    } else if (formattedTime.length == 4) {
+        formattedTime = formattedTime.substring(0,2) + ':' + formattedTime.substring(2);
+    }
+    console.log(formattedTime);
+
+    if (pm) {
+        formattedTime += ' PM';
+    } else {
+        formattedTime += ' AM';
+    }
+
+    return formattedTime;
 }
