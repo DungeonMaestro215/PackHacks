@@ -1,7 +1,7 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const filename = "./users.json";
-const daysOfTheWeek = ["SUNDAY", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const daysOfTheWeek = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 
 module.exports = {
     name: 'statusall',
@@ -17,8 +17,6 @@ module.exports = {
         users = JSON.parse(users);
 
         let keys = Object.keys(users);
-
-
 
         // map keys to string output of each users status
         let output = "```" + keys.map((key) => helperMan(key, msg, users)).join('') + "```";
@@ -55,14 +53,11 @@ function helperMan(userID, msg, users) {
 function isInEvent(userID, users) {
     if (users[userID]["schedule"]) {    // goes in if a schedule exists for this user
         // time for dates
-        var d = new Date();
-        var day = daysOfTheWeek[d.getDay()];     // String of the day of the week
-        var currentTime = 100 * d.getHours() + d.getMinutes();
-        console.log(currentTime);
-        console.log(day);
+        let d = new Date();
+        let day = daysOfTheWeek[d.getDay()];     // String of the day of the week
+        let currentTime = 100 * d.getHours() + d.getMinutes();
 
         let schedule = users[userID]["schedule"];
-        console.log(schedule);
 
         let events = Object.keys(schedule);
         console.log(events);
