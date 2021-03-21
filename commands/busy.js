@@ -1,19 +1,21 @@
 const Discord = require('discord.js');
 const fs = require('fs');
 const filename = "./users.json";
-const daysOfTheWeek = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
+const daysOfTheWeek = ["SUNDAY", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+// status
+// displays the status of a specified user
 module.exports = {
-    name: 'statusall',
-    alias: ['statusAll', 'Statusall', 'StatusAll'],
-    description: 'display all users and their statussssss',
+    name: 'busy',
+    alias: ['Busy'],
+    description: 'Displays which users are currently busy',
     args: false,
-    usage: '<arguments>',
-    cooldown: 5,
+    usage: '',
+    cooldown: 1,
     guildOnly: false,
     execute(msg, args) {
-        // read the users.json
-        let users = fs.readFileSync(filename);
+        // Read user file
+        let users = fs.readFileSync(filename), id;
         users = JSON.parse(users);
 
         let keys = Object.keys(users);
@@ -23,27 +25,19 @@ module.exports = {
 
         const allThatStats = new Discord.MessageEmbed()
         .setColor('#0099ff')
-        .addFields(
-            { name: 'username : status', value: output },
-            { name: '\u200B', value: '\u200B' },
-        )
-        .setTimestamp()
-
+        .setTitle('Who is Busy?')
+        .setDescription(output)
         msg.channel.send(allThatStats);
-
-        console.log(isInEvent(keys[1], users));
-
     }
 }
+
 // helper function for map
 // maps userID keys from users.json to a string array of current statussssss...
 function helperMan(userID, msg, users) {
     let weirdo = isInEvent(userID, users);
     let output = "";
     if(weirdo) {
-        output = users[userID]["username"] + " : in event - " + weirdo + "\n";
-    } else {
-        output = users[userID]["username"] + " : " + users[userID]["status"] + "\n";
+        output = users[userID]["username"] + ": " + weirdo + "\n";
     }
     return output;
 }
@@ -53,14 +47,15 @@ function helperMan(userID, msg, users) {
 function isInEvent(userID, users) {
     if (users[userID]["schedule"]) {    // goes in if a schedule exists for this user
         // time for dates
-        let d = new Date();
-        let day = daysOfTheWeek[d.getDay()];     // String of the day of the week
-        let currentTime = 100 * d.getHours() + d.getMinutes();
+        var d = new Date();
+        var day = daysOfTheWeek[d.getDay()];     // String of the day of the week
+        var currentTime = 100 * d.getHours() + d.getMinutes();
+        console.log(currentTime);
+        console.log(day);
 
         let schedule = users[userID]["schedule"];
 
         let events = Object.keys(schedule);
-        console.log(events);
         for (let i = 0; i < events.length; i++) {
             let event = schedule[events[i]];
             for (let j = 0; j < event.length; j++) {

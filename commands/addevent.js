@@ -38,6 +38,11 @@ module.exports = {
             users[msg.author.id]["schedule"] = {};
         }
 
+        if (users[msg.author.id]["username"] == undefined) { 
+            // Creates schedule object
+            users[msg.author.id]["username"] = msg.author.username;
+        }
+
         // Creates schedule object
         const dashIndex = args.indexOf('-');
         const eventName = args.slice(0, dashIndex).join(' ');

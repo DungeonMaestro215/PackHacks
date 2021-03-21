@@ -1,5 +1,6 @@
 const fs = require('fs');
 const filename = "./users.json";
+const daysOfTheWeek = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"];
 
 // status
 // displays the status of a specified user
@@ -27,7 +28,12 @@ module.exports = {
         try {
             // They could be referred to by username or nickname 
             if (users[id]) {
-                msg.channel.send(users[id]["status"]);
+                let weirdo = isInEvent(id, users);
+                if(weirdo) {
+                    msg.channel.send(weirdo);
+                } else {
+                    msg.channel.send(users[id]["status"]);
+                }
             } else {
                 // User doesn't have a status yet
                 msg.channel.send("There is no status for that user.");
@@ -37,4 +43,30 @@ module.exports = {
             msg.channel.send("That user does not exist. Check your spelling.");
         }
     }
+}
+
+// returns bool
+// true if user is currently in an event, false else
+function isInEvent(userID, users) {
+    if (users[userID]["schedule"]) {    // goes in if a schedule exists for this user
+        // time for dates
+        let d = new Date();
+        let day = daysOfTheWeek[d.getDay()];     // String of the day of the week
+        let currentTime = 100 * d.getHours() + d.getMinutes();
+
+        let schedule = users[userID]["schedule"];
+
+        let events = Object.keys(schedule);
+        console.log(events);
+        for (let i = 0; i < events.length; i++) {
+            let event = schedule[events[i]];
+            for (let j = 0; j < event.length; j++) {
+                //returns true if the days match and current time is within the start and end time of the event
+                if (event[j]["day"] == day && (currentTime >= event[j]["start"] && currentTime < event[j]["end"])) {
+                    return events[i];
+                }
+            }
+        }
+    }
+    return false;
 }
