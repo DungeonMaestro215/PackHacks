@@ -16,6 +16,10 @@ module.exports = {
         let users = fs.readFileSync(filename), id;
         users = JSON.parse(users);
 
+        if (!users) {
+            msg.channel.send("There aren't any status for any users yet! Why don't you make one with the setstatus")
+            return;
+        }
 
         let keys = Object.keys(users);
         if (args.length !== 0) {
