@@ -116,11 +116,53 @@ module.exports = {
                 `;
         });
 
+        // How many hours to include?
+        let timeLayout;
+        if (args.includes('24-hour')) {
+            timeLayout = `
+                <li><span>00:00</span></li>
+                <li><span>01:30</span></li>
+                <li><span>03:00</span></li>
+                <li><span>04:30</span></li>
+                <li><span>06:00</span></li>
+                <li><span>07:30</span></li>
+                <li><span>09:00</span></li>
+                <li><span>10:30</span></li>
+                <li><span>12:00</span></li>
+                <li><span>13:30</span></li>
+                <li><span>15:00</span></li>
+                <li><span>16:30</span></li>
+                <li><span>18:00</span></li>
+                <li><span>19:30</span></li>
+                <li><span>21:00</span></li>
+                <li><span>22:30</span></li>
+                <li><span>24:00</span></li>`
+        } else {
+            timeLayout = `
+                <li><span>06:00</span></li>
+                <li><span>07:00</span></li>
+                <li><span>08:00</span></li>
+                <li><span>09:00</span></li>
+                <li><span>10:00</span></li>
+                <li><span>11:00</span></li>
+                <li><span>12:00</span></li>
+                <li><span>13:00</span></li>
+                <li><span>14:00</span></li>
+                <li><span>15:00</span></li>
+                <li><span>16:00</span></li>
+                <li><span>17:00</span></li>
+                <li><span>18:00</span></li>
+                <li><span>19:00</span></li>
+                <li><span>20:00</span></li>
+                <li><span>21:00</span></li>
+                <li><span>22:00</span></li>`
+        }
+
         nodeHtmlToImage({
             output: './image.png',
             puppeteerArgs: { 'defaultViewport': {
                 'width': 1000,
-                'height': 3000
+                'height': 10000
             }},
             html: `
 <!DOCTYPE html>
@@ -787,56 +829,9 @@ module.exports = {
             href="https://codyhouse.co/gem/schedule-template/">https://codyhouse.co/gem/schedule-template/</a></p> -->
     <div class="cd-schedule loading">
         <div class="timeline">
-            <ul>
-                <li><span>00:30</span></li>
-                <li><span>01:00</span></li>
-                <li><span>01:30</span></li>
-                <li><span>02:00</span></li>
-                <li><span>02:30</span></li>
-                <li><span>03:00</span></li>
-                <li><span>03:30</span></li>
-                <li><span>04:00</span></li>
-                <li><span>04:30</span></li>
-                <li><span>05:00</span></li>
-                <li><span>05:30</span></li>
-                <li><span>06:00</span></li>
-                <li><span>06:30</span></li>
-                <li><span>07:00</span></li>
-                <li><span>07:30</span></li>
-                <li><span>08:00</span></li>
-                <li><span>08:30</span></li>
-                <li><span>09:00</span></li>
-                <li><span>09:30</span></li>
-                <li><span>10:00</span></li>
-                <li><span>10:30</span></li>
-                <li><span>11:00</span></li>
-                <li><span>11:30</span></li>
-                <li><span>12:00</span></li>
-                <li><span>12:30</span></li>
-                <li><span>13:00</span></li>
-                <li><span>13:30</span></li>
-                <li><span>14:00</span></li>
-                <li><span>14:30</span></li>
-                <li><span>15:00</span></li>
-                <li><span>15:30</span></li>
-                <li><span>16:00</span></li>
-                <li><span>16:30</span></li>
-                <li><span>17:00</span></li>
-                <li><span>17:30</span></li>
-                <li><span>18:00</span></li>
-                <li><span>18:30</span></li>
-                <li><span>19:00</span></li>
-                <li><span>19:30</span></li>
-                <li><span>20:00</span></li>
-                <li><span>20:30</span></li>
-                <li><span>21:00</span></li>
-                <li><span>21:30</span></li>
-                <li><span>22:00</span></li>
-                <li><span>22:30</span></li>
-                <li><span>23:00</span></li>
-                <li><span>23:30</span></li>
-                <li><span>00:00</span></li>
-            </ul>
+            <ul>` 
+            + timeLayout +
+            `</ul>
         </div> <!-- .timeline -->
 
         <div class="events">

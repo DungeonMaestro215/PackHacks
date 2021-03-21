@@ -8,7 +8,7 @@ module.exports = {
     alias: ['setStatus', 'Setstatus', 'SetStatus'],
     description: 'Sets your status',
     args: true,
-    usage: '<status name> <dnd: optional>',
+    usage: '<status name> <dnd: optional> <[time in minutes]>',
     cooldown: 5,
     guildOnly: false,
     execute(msg, args) {
@@ -28,8 +28,28 @@ module.exports = {
         // Remove 'dnd' string if there is one
         args = args.filter(element => element !== "dnd");
 
+        let time = args.find(e => e.includes('[') && e.includes(']'));
+        if (time !== undefined) {
+            time = time.replace('[', '').replace(']', '')
+        }
+
+        // Remove 'time' value if there is one
+        args = args.filter(e => !e.includes('[') && !e.includes(']'));
+
+        let statusText = args.join(" ");
+
         // Set user's status
         users[msg.author.id]["status"] = args.join(" ");   // Allow sentences for status
+
+        let expiration;
+        // Sets status expiration date
+        if (time == undefined) {
+            expiration = undefined;
+        } else {
+            expiration = new Date(new Date().getTime() + time*60000).valueOf();
+        }
+        
+        users[msg.author.id]["statusexpiration"] = expiration;
 
         let data = JSON.stringify(users, null, 2);      // Nicely formate the json file (can be removed later)
 
@@ -40,5 +60,6 @@ module.exports = {
         });
 
         // msg.author.setActivity(args[0], { type: "PLAYING" });
+        
     }
 }

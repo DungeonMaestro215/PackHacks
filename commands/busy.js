@@ -24,10 +24,18 @@ module.exports = {
         let output = "```" + keys.map((key) => helperMan(key, msg, users)).join('') + "```";
 
         const allThatStats = new Discord.MessageEmbed()
-        .setColor('#0099ff')
-        .setTitle('Who is Busy?')
-        .setDescription(output)
+            .setColor('#0099ff')
+            .setTitle('Who is Busy?')
+            .setDescription(output)
         msg.channel.send(allThatStats);
+
+        // Write to the file
+        let data = JSON.stringify(users, null, 2);      // Nicely formate the json file (can be removed later)
+
+        fs.writeFile(filename, data, (err) => {
+            if (err) throw err;
+            console.log("Data written to file");
+        });
     }
 }
 
@@ -36,9 +44,19 @@ module.exports = {
 function helperMan(userID, msg, users) {
     let weirdo = isInEvent(userID, users);
     let output = "";
-    if(weirdo) {
-        output = users[userID]["username"] + ": " + weirdo + "\n";
+
+    if (hasExpired(users[userID]["statusexpiration"])) {
+        users[userID]["status"] = "Nothing";
+        users[userID]["statusexpiration"] = undefined;
+        users[userID]["dnd"] = false;
     }
+
+    if (weirdo) {
+        output = users[userID]["username"] + ": " + weirdo + "\n";
+    } else if (users[userID]["dnd"]) {
+        output = users[userID]["username"] + ": " + users[userID]["status"] + " dnd \n";
+    }
+    
     return output;
 }
 
@@ -67,4 +85,11 @@ function isInEvent(userID, users) {
         }
     }
     return false;
+}
+
+function hasExpired(expirationDate) {
+    console.log(new Date().valueOf());
+    console.log(expirationDate);
+
+    return new Date().valueOf() > expirationDate;
 }
