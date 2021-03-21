@@ -6,8 +6,7 @@ const daysOfTheWeek = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "
 // displays the status of a specified user
 module.exports = {
     name: 'status',
-    alias: ['Status'],
-    description: 'Displays the status of a specified user',
+    description: 'Displays the status of a specified user.',
     args: false,
     usage: '<user>',
     cooldown: 1,
@@ -17,11 +16,20 @@ module.exports = {
         let users = fs.readFileSync(filename), id;
         users = JSON.parse(users);
 
+
         let keys = Object.keys(users);
-        for (let i = 0; i < keys.length; i++) {
-            if (users[keys[i]]['username'] == args[0]) {
-                id = keys[i];
+        if (args.length !== 0) {
+            for (let i = 0; i < keys.length; i++) {
+                if (users[keys[i]]['username'] == args[0]) {
+                    id = keys[i];
+                }
             }
+        } else {
+            id = msg.author.id;
+        }
+
+        if (!users[id]) {
+            users[id] = {"username": users[id].username, "schedule": {}, "status": "Nothing"};
         }
 
         // Find the user referred to

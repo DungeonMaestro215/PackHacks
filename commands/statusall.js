@@ -5,11 +5,11 @@ const daysOfTheWeek = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "
 
 module.exports = {
     name: 'statusall',
-    alias: ['statusAll', 'Statusall', 'StatusAll'],
-    description: 'display all users and their statussssss',
+    alias: ['status-all'],
+    description: 'Display all users and their statuses.',
     args: false,
     usage: '<arguments>',
-    cooldown: 5,
+    cooldown: 1,
     guildOnly: false,
     execute(msg, args) {
         // read the users.json

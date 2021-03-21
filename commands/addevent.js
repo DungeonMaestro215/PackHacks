@@ -4,12 +4,12 @@ const filename = "./users.json";
 // Add event
 module.exports = {
     name: 'addevent',
-    alias: ['Addevent', 'AddEvent', 'addEvent'],
-    description: 'Add an event to your schedule',
+    alias: ['createevent'],
+    description: 'Add an event to your schedule.',
     args: true,
     usage: '<Event Name> - <Event Day> <Event Start Time> <Event End Time> <Event Day 2> <Event Start Time> <Event End Time> ...',
     example: '>>addevent COMP 410 - Monday 11:30AM 1:00PM Thursday 2:00PM 3:30PM',
-    cooldown: 5,
+    cooldown: 1,
     guildOnly: false,
     execute(msg, args) {
         // Read users file
@@ -28,7 +28,7 @@ module.exports = {
 
         // If the user doesn't have a spot, make one
         if (!users[msg.author.id]) {
-            users[msg.author.id] = {"username": msg.author.username, "schedule": {}};
+            users[msg.author.id] = {"username": msg.author.username, "schedule": {}, "status": "Nothing"};
         }
         // console.log(users[msg.author.id]);
         // console.log(users[msg.author.id]["schedule"]);

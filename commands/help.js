@@ -5,7 +5,7 @@ module.exports = {
     description: `List all of my commands or info about a specific command.`,
     aliases: ['commands'],
     usage: '[command name]',
-    cooldown: 5,
+    cooldown: 1,
     execute(msg, args) {
         // 'data' will hold our output
         const data = [];
@@ -20,18 +20,6 @@ module.exports = {
             data.push('\`\`\`');
 
             data.push(`You can send \`${prefix}help [command name]\` to get info on a specific command!`);
-
-            // If help messages get too long, DM them
-            // It might, for some reason, not be possible to message them directly
-            // return msg.author.send(data, { split: true })
-	        //     .then(() => {
-		    //         if (msg.channel.type === 'dm') return;
-		    //         msg.reply('I\'ve sent you a DM with all my commands!');
-	        //     })
-	        //     .catch(error => {
-		    //         console.error(`Could not send help DM to ${msg.author.tag}.\n`, error);
-		    //         msg.reply('it seems like I can\'t DM you! Do you have DMs disabled?');
-	        //     });
 
             // split will automatically split the message into 2 or more if it exceeds 2000 characters
             return msg.reply(data, { split: true });
@@ -50,6 +38,7 @@ module.exports = {
         if (command.aliases) data.push(`**Aliases:** ${command.aliases.join(', ')}`);
         if (command.description) data.push(`**Description:** ${command.description}`);
         if (command.usage) data.push(`**Usage:** ${prefix}${command.name} ${command.usage}`);
+        if (command.example) data.push(`**Example:** ${command.example}`);
 
         data.push(`**Cooldown:** ${command.cooldown || 3} second(s)`);
 

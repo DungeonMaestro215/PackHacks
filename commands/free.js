@@ -7,10 +7,9 @@ const daysOfTheWeek = ["SUNDAY", "Monday", "Tuesday", "Wednesday", "Thursday", "
 // displays the status of a specified user
 module.exports = {
     name: 'free',
-    alias: ['free'],
-    description: 'Displays which users are currently free',
+    alias: ['not-busy'],
+    description: 'Displays which users are currently free.',
     args: false,
-    usage: '',
     cooldown: 1,
     guildOnly: false,
     execute(msg, args) {
