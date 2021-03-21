@@ -24,6 +24,7 @@ module.exports = {
         const allThatStats = new Discord.MessageEmbed()
         .setTitle('username : status')
         .setColor('#0099ff')
+        .setThumbnail("https://i.imgur.com/JjKKF7p.jpg")
         .setDescription(output)
 
         msg.channel.send(allThatStats);
