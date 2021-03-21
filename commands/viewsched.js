@@ -83,7 +83,7 @@ module.exports = {
             }
         }
 
-        let mondayField = "Nothing", tuesdayField = "Nothing", wednesdayField = "Nothing", thursdayField = "Nothing", fridayField = "Nothing", saturdayField = "Nothing", sundayField = "Nothing";
+        // let mondayField = "Nothing", tuesdayField = "Nothing", wednesdayField = "Nothing", thursdayField = "Nothing", fridayField = "Nothing", saturdayField = "Nothing", sundayField = "Nothing";
         let fields = {
             "Monday": "Nothing",
             "Tuesday": "Nothing",
