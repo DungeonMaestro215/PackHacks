@@ -1,6 +1,4 @@
-// Ping
-// Basic layout of a command.
-
+const Discord = require('discord.js');
 const fs = require('fs');
 const filename = "./users.json";
 
@@ -21,7 +19,16 @@ module.exports = {
 
         // map keys to string output of each users status
         let output = "```" + keys.map((key) => helperMan(key, msg, users)).join('') + "```";
-        msg.channel.send(output);
+
+        const allThatStats = new Discord.MessageEmbed()
+        .setColor('#0099ff')
+        .addFields(
+            { name: 'username : status', value: output },
+            { name: '\u200B', value: '\u200B' },
+        )
+        .setTimestamp()
+
+        msg.channel.send(allThatStats);
 
     }
 }
