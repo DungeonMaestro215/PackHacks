@@ -4,8 +4,8 @@ const filename = "./users.json";
 
 // set status of user
 module.exports = {
-    name: 'set_status',
-    alias: ['set_Status', 'Set_status', 'Set_Status'],
+    name: 'setstatus',
+    alias: ['setStatus', 'Setstatus', 'SetStatus'],
     description: 'Sets your status',
     args: true,
     usage: '<status name> <dnd: optional>',
