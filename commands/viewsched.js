@@ -4,6 +4,7 @@ const Discord = require('discord.js');
 const filename = "./users.json";
 const nodeHtmlToImage = require('node-html-to-image');
 const { url } = require('inspector');
+const { deflateSync } = require('zlib');
 
 // set status of user
 module.exports = {
@@ -61,81 +62,96 @@ module.exports = {
 
         for (let i = 0; i < schedDataKeys.length; i++) {
             for (let j = 0; j < schedData[schedDataKeys[i]].length; j++) {
-                if (schedData[schedDataKeys[i]][j]["day"] == 'MONDAY') {
-                    schedule["Monday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
-                } else if (schedData[schedDataKeys[i]][j]["day"] == ('TUESDAY')) {
-                    schedule["Tuesday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
-                } else if (schedData[schedDataKeys[i]][j]["day"] == ('WEDNESDAY')) {
-                    schedule["Wednesday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
-                } else if (schedData[schedDataKeys[i]][j]["day"] == ('THURSDAY')) {
-                    schedule["Thursday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
-                } else if (schedData[schedDataKeys[i]][j]["day"] == ('FRIDAY')) {
-                    schedule["Friday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
-                } else if (schedData[schedDataKeys[i]][j]["day"] == ('SATURDAY')) {
-                    schedule["Saturday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
-                } else if (schedData[schedDataKeys[i]][j]["day"] == ('SUNDAY')) {
-                    schedule["Sunday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
-                }
+                // if (schedData[schedDataKeys[i]][j]["day"] == 'MONDAY') {
+                //     schedule["Monday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
+                // } else if (schedData[schedDataKeys[i]][j]["day"] == ('TUESDAY')) {
+                //     schedule["Tuesday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
+                // } else if (schedData[schedDataKeys[i]][j]["day"] == ('WEDNESDAY')) {
+                //     schedule["Wednesday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
+                // } else if (schedData[schedDataKeys[i]][j]["day"] == ('THURSDAY')) {
+                //     schedule["Thursday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
+                // } else if (schedData[schedDataKeys[i]][j]["day"] == ('FRIDAY')) {
+                //     schedule["Friday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
+                // } else if (schedData[schedDataKeys[i]][j]["day"] == ('SATURDAY')) {
+                //     schedule["Saturday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
+                // } else if (schedData[schedDataKeys[i]][j]["day"] == ('SUNDAY')) {
+                //     schedule["Sunday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
+                // }
+                let day = schedData[schedDataKeys[i]][j]["day"].toLowerCase();
+                day = day.charAt(0).toUpperCase() + day.slice(1);
+                schedule[day].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
             }
         }
 
         let mondayField = "Nothing", tuesdayField = "Nothing", wednesdayField = "Nothing", thursdayField = "Nothing", fridayField = "Nothing", saturdayField = "Nothing", sundayField = "Nothing";
+        let fields = {
+            "Monday": "Nothing",
+            "Tuesday": "Nothing",
+            "Wednesday": "Nothing",
+            "Thursday": "Nothing",
+            "Friday": "Nothing",
+            "Saturday": "Nothing",
+            "Sunday": "Nothing",
+        }
 
-        for (let i = 0; i < schedule['Monday'].length; i++) {
-            if (i === 0) mondayField = "";
-            mondayField += schedule['Monday'][i]['Class'] + '\n';
-            mondayField += 'Start: ' + convertToTimeString(schedule['Monday'][i]['Start Time']) + '\n';
-            mondayField += 'End: ' + convertToTimeString(schedule['Monday'][i]['End Time']) + '\n\n';
-        }
-        for (let i = 0; i < schedule['Tuesday'].length; i++) {
-            if (i === 0) tuesdayField = "";
-            tuesdayField += schedule['Tuesday'][i]['Class'] + '\n';
-            tuesdayField += 'Start: ' + convertToTimeString(schedule['Tuesday'][i]['End Time']) + '\n';
-            tuesdayField += 'End: ' + convertToTimeString(schedule['Tuesday'][i]['End Time']) + '\n\n';
-        }
-        for (let i = 0; i < schedule['Wednesday'].length; i++) {
-            if (i === 0) wednesdayField = "";
-            wednesdayField += schedule['Wednesday'][i]['Class'] + '\n';
-            wednesdayField += 'Start: ' + convertToTimeString(schedule['Wednesday'][i]['End Time']) + '\n';
-            wednesdayField += 'End: ' + convertToTimeString(schedule['Wednesday'][i]['End Time']) + '\n\n';
-        }
-        for (let i = 0; i < schedule['Thursday'].length; i++) {
-            if (i === 0) thursdayField = "";
-            thursdayField += schedule['Thursday'][i]['Class'] + '\n';
-            thursdayField += 'Start: ' + convertToTimeString(schedule['Thursday'][i]['End Time']) + '\n';
-            thursdayField += 'End: ' + convertToTimeString(schedule['Thursday'][i]['End Time']) + '\n\n';
-        }
-        for (let i = 0; i < schedule['Friday'].length; i++) {
-            if (i === 0) fridayField = "";
-            fridayField += schedule['Friday'][i]['Class'] + '\n';
-            fridayField += 'Start: ' + convertToTimeString(schedule['Friday'][i]['End Time']) + '\n';
-            fridayField += 'End: ' + convertToTimeString(schedule['Friday'][i]['End Time']) + '\n\n';
-        }
-        for (let i = 0; i < schedule['Saturday'].length; i++) {
-            if (i === 0) saturdayField = "";
-            saturdayField += schedule['Saturday'][i]['Class'] + '\n';
-            saturdayField += 'Start: ' + convertToTimeString(schedule['Saturday'][i]['End Time']) + '\n';
-            saturdayField += 'End: ' + convertToTimeString(schedule['Saturday'][i]['End Time']) + '\n\n';
-        }
-        for (let i = 0; i < schedule['Sunday'].length; i++) {
-            if (i === 0) sundayField = "";
-            sundayField += schedule['Sunday'][i]['Class'] + '\n';
-            sundayField += 'Start: ' + convertToTimeString(schedule['Sunday'][i]['End Time']) + '\n';
-            sundayField += 'End: ' + convertToTimeString(schedule['Sunday'][i]['End Time']) + '\n\n';
-        }
+        Object.keys(schedule).forEach(day => {
+            for (let i = 0; i < schedule[day].length; i++) {
+                if (i === 0) mondayField = "";
+                fields[day] += schedule[day][i]['Class'] + '\n';
+                fields[day] += 'Start: ' + convertToTimeString(schedule[day][i]['Start Time']) + '\n';
+                fields[day] += 'End: ' + convertToTimeString(schedule[day][i]['End Time']) + '\n\n';
+            }
+        });
+
+        // for (let i = 0; i < schedule['Tuesday'].length; i++) {
+        //     if (i === 0) tuesdayField = "";
+        //     tuesdayField += schedule['Tuesday'][i]['Class'] + '\n';
+        //     tuesdayField += 'Start: ' + convertToTimeString(schedule['Tuesday'][i]['End Time']) + '\n';
+        //     tuesdayField += 'End: ' + convertToTimeString(schedule['Tuesday'][i]['End Time']) + '\n\n';
+        // }
+        // for (let i = 0; i < schedule['Wednesday'].length; i++) {
+        //     if (i === 0) wednesdayField = "";
+        //     wednesdayField += schedule['Wednesday'][i]['Class'] + '\n';
+        //     wednesdayField += 'Start: ' + convertToTimeString(schedule['Wednesday'][i]['End Time']) + '\n';
+        //     wednesdayField += 'End: ' + convertToTimeString(schedule['Wednesday'][i]['End Time']) + '\n\n';
+        // }
+        // for (let i = 0; i < schedule['Thursday'].length; i++) {
+        //     if (i === 0) thursdayField = "";
+        //     thursdayField += schedule['Thursday'][i]['Class'] + '\n';
+        //     thursdayField += 'Start: ' + convertToTimeString(schedule['Thursday'][i]['End Time']) + '\n';
+        //     thursdayField += 'End: ' + convertToTimeString(schedule['Thursday'][i]['End Time']) + '\n\n';
+        // }
+        // for (let i = 0; i < schedule['Friday'].length; i++) {
+        //     if (i === 0) fridayField = "";
+        //     fridayField += schedule['Friday'][i]['Class'] + '\n';
+        //     fridayField += 'Start: ' + convertToTimeString(schedule['Friday'][i]['End Time']) + '\n';
+        //     fridayField += 'End: ' + convertToTimeString(schedule['Friday'][i]['End Time']) + '\n\n';
+        // }
+        // for (let i = 0; i < schedule['Saturday'].length; i++) {
+        //     if (i === 0) saturdayField = "";
+        //     saturdayField += schedule['Saturday'][i]['Class'] + '\n';
+        //     saturdayField += 'Start: ' + convertToTimeString(schedule['Saturday'][i]['End Time']) + '\n';
+        //     saturdayField += 'End: ' + convertToTimeString(schedule['Saturday'][i]['End Time']) + '\n\n';
+        // }
+        // for (let i = 0; i < schedule['Sunday'].length; i++) {
+        //     if (i === 0) sundayField = "";
+        //     sundayField += schedule['Sunday'][i]['Class'] + '\n';
+        //     sundayField += 'Start: ' + convertToTimeString(schedule['Sunday'][i]['End Time']) + '\n';
+        //     sundayField += 'End: ' + convertToTimeString(schedule['Sunday'][i]['End Time']) + '\n\n';
+        // }
 
 
         const exampleEmbed = new Discord.MessageEmbed()
             .setColor('#0099ff')
             .setTitle(users[id]['username'] + '\'s Schedule')
             .addFields(
-                { name: 'Monday: ', value: mondayField },
-                { name: 'Tuesday', value: tuesdayField },
-                { name: 'Wednesday', value: wednesdayField },
-                { name: 'Thursday', value: thursdayField },
-                { name: 'Friday', value: fridayField },
-                { name: 'Saturday', value: saturdayField },
-                { name: 'Sunday', value: sundayField },
+                { name: 'Monday: ', value: fields["Monday"] },
+                { name: 'Tuesday', value: fields["Tuesday"] },
+                { name: 'Wednesday', value: fields["Wednesday"] },
+                { name: 'Thursday', value: fields["Thursday"] },
+                { name: 'Friday', value: fields["Friday"] },
+                { name: 'Saturday', value: fields["Saturday"] },
+                { name: 'Sunday', value: fields["Sunday"] },
             )
         // .addField('Inline field title', 'Some value here', true)
 
@@ -179,13 +195,13 @@ let convertToTimeString = function (time) {
 
     formattedTime = formattedTime.toString();
 
-    console.log(formattedTime.length);
+    // console.log(formattedTime.length);
     if (formattedTime.length == 3) {
         formattedTime = formattedTime.substring(0, 1) + ':' + formattedTime.substring(1);
     } else if (formattedTime.length == 4) {
         formattedTime = formattedTime.substring(0, 2) + ':' + formattedTime.substring(2);
     }
-    console.log(formattedTime);
+    // console.log(formattedTime);
 
     if (pm) {
         formattedTime += ' PM';

@@ -27,7 +27,8 @@ module.exports = {
 
         nodeHtmlToImage({
             output: './image.png',
-            html: `<!DOCTYPE html>
+            html: `
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -394,17 +395,9 @@ module.exports = {
     background: #577F92;
   }
   
-  .cd-schedule .single-event[data-event="event-1"]:hover {
-    background: #618da1;
-  }
-  
   .cd-schedule .single-event[data-event="event-2"],
   .cd-schedule [data-event="event-2"] .header-bg {
     background: #443453;
-  }
-  
-  .cd-schedule .single-event[data-event="event-2"]:hover {
-    background: #513e63;
   }
   
   .cd-schedule .single-event[data-event="event-3"],
@@ -412,17 +405,9 @@ module.exports = {
     background: #A2B9B2;
   }
   
-  .cd-schedule .single-event[data-event="event-3"]:hover {
-    background: #b1c4be;
-  }
-  
   .cd-schedule .single-event[data-event="event-4"],
   .cd-schedule [data-event="event-4"] .header-bg {
     background: #f6b067;
-  }
-  
-  .cd-schedule .single-event[data-event="event-4"]:hover {
-    background: #f7bd7f;
   }
   
   .cd-schedule .event-modal {
@@ -703,7 +688,6 @@ module.exports = {
 </head>
 
 <body>
-    <br />
     <!-- <p class="codyhouse">link to the site of Codyhouse: <a
             href="https://codyhouse.co/gem/schedule-template/">https://codyhouse.co/gem/schedule-template/</a></p> -->
     <div class="cd-schedule loading">
@@ -887,7 +871,7 @@ module.exports = {
                         </li>
                     </ul>
                 </li>
-                <!--        -->
+
                 <li class="events-group">
                     <div class="top-info"><span>Saturday</span></div>
                     <ul>
@@ -913,9 +897,7 @@ module.exports = {
                         </li>
                     </ul>
                 </li>
-                <!--        -->
 
-                <!--        -->
                 <li class="events-group">
                     <div class="top-info"><span>Sunday</span></div>
                     <ul>
@@ -941,8 +923,6 @@ module.exports = {
                         </li>
                     </ul>
                 </li>
-                <!--        -->
-            </ul>
         </div>
 
         <div class="event-modal">
@@ -969,10 +949,10 @@ module.exports = {
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript">
 jQuery(document).ready(function($){
-	var transitionEnd = 'webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend';
-	var transitionsSupported = ( $('.csstransitions').length > 0 );
-	//if browser does not support transitions - use a different event to trigger them
-	if( !transitionsSupported ) transitionEnd = 'noTransition';
+	// var transitionEnd = 'webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend';
+	// var transitionsSupported = ( $('.csstransitions').length > 0 );
+	// //if browser does not support transitions - use a different event to trigger them
+	// if( !transitionsSupported ) transitionEnd = 'noTransition';
 	
 	//should add a loding while the events are organized 
 
@@ -1005,7 +985,6 @@ jQuery(document).ready(function($){
 
 	SchedulePlan.prototype.initSchedule = function() {
 		this.scheduleReset();
-		this.initEvents();
 	};
 
 	SchedulePlan.prototype.scheduleReset = function() {
@@ -1029,31 +1008,6 @@ jQuery(document).ready(function($){
 		} else {
 			this.element.removeClass('loading');
 		}
-	};
-
-	SchedulePlan.prototype.initEvents = function() {
-		var self = this;
-
-		this.singleEvents.each(function(){
-			//create the .event-date element for each event
-			var durationLabel = '<span class="event-date">'+$(this).data('start')+' - '+$(this).data('end')+'</span>';
-			$(this).children('a').prepend($(durationLabel));
-
-			//detect click on the event and open the modal
-			$(this).on('click', 'a', function(event){
-				event.preventDefault();
-				if( !self.animating ) self.openModal($(this));
-			});
-		});
-
-		//close modal window
-		this.modal.on('click', '.close', function(event){
-			event.preventDefault();
-			if( !self.animating ) self.closeModal(self.eventsGroup.find('.selected-event'));
-		});
-		this.element.on('click', '.cover-layer', function(event){
-			if( !self.animating && self.element.hasClass('modal-is-open') ) self.closeModal(self.eventsGroup.find('.selected-event'));
-		});
 	};
 
 	SchedulePlan.prototype.placeEvents = function() {
@@ -1299,36 +1253,13 @@ jQuery(document).ready(function($){
 	};
 
 	var schedules = $('.cd-schedule');
-	var objSchedulesPlan = [],
-		windowResize = false;
+    windowResize = false;
 	
 	if( schedules.length > 0 ) {
 		schedules.each(function(){
 			//create SchedulePlan objects
-			objSchedulesPlan.push(new SchedulePlan($(this)));
+			new SchedulePlan($(this));
 		});
-	}
-
-	$(window).on('resize', function(){
-		if( !windowResize ) {
-			windowResize = true;
-			(!window.requestAnimationFrame) ? setTimeout(checkResize) : window.requestAnimationFrame(checkResize);
-		}
-	});
-
-	$(window).keyup(function(event) {
-		if (event.keyCode == 27) {
-			objSchedulesPlan.forEach(function(element){
-				element.closeModal(element.eventsGroup.find('.selected-event'));
-			});
-		}
-	});
-
-	function checkResize(){
-		objSchedulesPlan.forEach(function(element){
-			element.scheduleReset();
-		});
-		windowResize = false;
 	}
 
 	function getScheduleTimestamp(time) {
@@ -1338,21 +1269,13 @@ jQuery(document).ready(function($){
 		var timeStamp = parseInt(timeArray[0])*60 + parseInt(timeArray[1]);
 		return timeStamp;
 	}
-
-	function transformElement(element, value) {
-		element.css({
-		    '-moz-transform': value,
-		    '-webkit-transform': value,
-			'-ms-transform': value,
-			'-o-transform': value,
-			'transform': value
-		});
-	}
 });
 </script>
 </body>
 
-</html>`
+</html>
+            
+            `
         }).then(() => {
             // Send picture to chat
             const embed = new Discord.MessageEmbed()
