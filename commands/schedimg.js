@@ -26,6 +26,7 @@ module.exports = {
             users[msg.author.id]["schedule"] = {};
         }
 
+        // We will rebuild the user's events on a daily basis
         let schedule = {
             "Monday": [],
             "Tuesday": [],
@@ -36,6 +37,7 @@ module.exports = {
             "Sunday": []
         }
 
+        // did the user input another user?
         if (args.length !== 0) {
             let keys = Object.keys(users);
             for (let i = 0; i < keys.length; i++) {
@@ -47,20 +49,22 @@ module.exports = {
             id = msg.author.id;
         }
 
+        // Get user data
         let schedData;
         try {
             schedData = users[id]["schedule"];
         } catch (e) {
             msg.channel.send("Selected user does not exist.");
         }
-
         let schedDataKeys = Object.keys(schedData);
 
+        // Add some color coding
         let counter = 1
         schedDataKeys.forEach(event => {
             schedData[event]['val'] = counter;
             counter = (counter + 1) % 8;        // We have 8 color options
         });
+        // For each event, add it to the weekly schedule
         for (let i = 0; i < schedDataKeys.length; i++) {
             for (let j = 0; j < schedData[schedDataKeys[i]].length; j++) {
                 let day = schedData[schedDataKeys[i]][j]["day"].toLowerCase();
@@ -69,21 +73,7 @@ module.exports = {
             }
         }
 
-        /*
-                <li class="events-group">
-                    <div class="top-info"><span>Tuesday</span></div>
-
-                    <ul>
-                        <li class="single-event" data-start="10:00" data-end="11:00" data-content="event-rowing-workout"
-                            data-event="event-2">
-                            <a href="#0">
-                                <em class="event-name">Rowing Workout</em>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-        */
-        
+        // build an html element for this event
         let output = "";
         Object.keys(schedule).forEach(day => {
             output += `
@@ -158,6 +148,7 @@ module.exports = {
                 <li><span>22:00</span></li>`
         }
 
+        // Make a nice html layout and convert it to a png
         nodeHtmlToImage({
             output: './image.png',
             puppeteerArgs: { 'defaultViewport': {
@@ -1225,31 +1216,4 @@ jQuery(document).ready(function($){
             msg.channel.send(embed);
         });
     }
-}
-
-let convertToTimeString = function (time) {
-    let pm = false, formattedTime = time;
-
-    if (formattedTime > 1299) {
-        formattedTime -= 1200;
-        pm = true;
-    }
-
-    formattedTime = formattedTime.toString();
-
-    // console.log(formattedTime.length);
-    if (formattedTime.length == 3) {
-        formattedTime = formattedTime.substring(0, 1) + ':' + formattedTime.substring(1);
-    } else if (formattedTime.length == 4) {
-        formattedTime = formattedTime.substring(0, 2) + ':' + formattedTime.substring(2);
-    }
-    // console.log(formattedTime);
-
-    if (pm) {
-        formattedTime += ' PM';
-    } else {
-        formattedTime += ' AM';
-    }
-
-    return formattedTime;
 }
