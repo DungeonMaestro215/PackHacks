@@ -8,12 +8,18 @@ module.exports = {
     description: 'Remove an event from your schedule.',
     args: false,
     usage: '<Event Number>',
-    cooldown: 5,
+    cooldown: 1,
     guildOnly: false,
     execute(msg, args) {
         // Read users file
         let users = fs.readFileSync(filename);
         users = JSON.parse(users);
+
+        // If the user doesn't have a spot, make one
+        if (!users[msg.author.id]) {
+            users[msg.author.id] = {"username": msg.author.username, "schedule": {}, "status": "Nothing"};
+        }
+
         const sched = users[msg.author.id].schedule;
         const events = Object.keys(sched);
 
@@ -36,6 +42,7 @@ module.exports = {
             output += '```';
 
             msg.channel.send(output);
+            msg.channel.send("Now use **>>delevent <number>** to remove a specific event.");
             return;
         }
 

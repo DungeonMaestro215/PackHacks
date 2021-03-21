@@ -6,21 +6,35 @@ const nodeHtmlToImage = require('node-html-to-image');
 // set status of user
 module.exports = {
     name: 'schedimg',
-    alias: ['viewschedule', 'Viewsched', 'ViewSched', 'ViewSchedule', 'Viewschedule'],
+    alias: ['scheduleimg', 'schedimage', 'scheduleimage'],
     description: 'Get image of user\'s schedule.',
     args: false,
     usage: '<optional username>',
-    cooldown: 5,
+    cooldown: 1,
     guildOnly: false,
     execute(msg, args) {
         // Read users file
         let users = fs.readFileSync(filename);
         users = JSON.parse(users);
 
-        // If the user doesn't have a spot, make one
-        if (!users[msg.author.id]) {
-            users[msg.author.id] = {};
+        // did the user input another user?
+        let id;
+        if (args.length !== 0) {
+            let keys = Object.keys(users);
+            for (let i = 0; i < keys.length; i++) {
+                if (users[keys[i]]['username'] == args[0]) {
+                    id = keys[i];
+                }
+            }
+        } else {
+            id = msg.author.id;
         }
+
+        // If the user doesn't have a spot, make one
+        if (!users[id]) {
+            users[id] = {"username": users[id].username, "schedule": {}, "status": "Nothing"};
+        }
+
         if (users[msg.author.id]["schedule"] == undefined) { 
             // Creates schedule object
             users[msg.author.id]["schedule"] = {};
@@ -35,18 +49,6 @@ module.exports = {
             "Friday": [],
             "Saturday": [],
             "Sunday": []
-        }
-
-        // did the user input another user?
-        if (args.length !== 0) {
-            let keys = Object.keys(users);
-            for (let i = 0; i < keys.length; i++) {
-                if (users[keys[i]]['username'] == args[0]) {
-                    id = keys[i];
-                }
-            }
-        } else {
-            id = msg.author.id;
         }
 
         // Get user data

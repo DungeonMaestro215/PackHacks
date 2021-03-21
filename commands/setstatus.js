@@ -5,11 +5,11 @@ const filename = "./users.json";
 // set status of user
 module.exports = {
     name: 'setstatus',
-    alias: ['setStatus', 'Setstatus', 'SetStatus'],
-    description: 'Sets your status',
+    alias: ['changestatus', 'chngstatus'],
+    description: 'Sets your status.',
     args: true,
     usage: '<status name> <dnd: optional> <[time in minutes]>',
-    cooldown: 5,
+    cooldown: 1,
     guildOnly: false,
     execute(msg, args) {
         // Read users file
@@ -18,8 +18,7 @@ module.exports = {
 
         // If the user doesn't have a spot, make one
         if (!users[msg.author.id]) {
-            users[msg.author.id] = {};
-            users[msg.author.id]["username"] = msg.author.username;
+            users[msg.author.id] = {"username": msg.author.username, "schedule": {}, "status": "Nothing"};
         }
 
         // Do Not Disturb?

@@ -6,7 +6,7 @@ module.exports = {
     description: 'Ping!',
     args: false,
     usage: '<arguments>',
-    cooldown: 5,
+    cooldown: 1,
     guildOnly: false,
     execute(msg, args) {
         msg.channel.send('Pong.');
