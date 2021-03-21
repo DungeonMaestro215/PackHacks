@@ -32,6 +32,13 @@ module.exports = {
                 if(weirdo) {
                     msg.channel.send(weirdo);
                 } else {
+                    let expired = hasExpired(users[id]["statusexpiration"]);
+                    
+                    if (expired) {
+                        users[id]["status"] = "Nothing";
+                        users[id]["statusexpiration"] = undefined;
+                        users[id]["dnd"] = false;
+                    } 
                     msg.channel.send(users[id]["status"]);
                 }
             } else {
@@ -42,7 +49,15 @@ module.exports = {
             // No user found
             msg.channel.send("That user does not exist. Check your spelling.");
         }
-    }
+
+        // Write to the file
+        let data = JSON.stringify(users, null, 2);      // Nicely formate the json file (can be removed later)
+
+        fs.writeFile(filename, data, (err) => {
+            if (err) throw err;
+            console.log("Data written to file");
+        });
+    }  
 }
 
 // returns bool
@@ -69,4 +84,11 @@ function isInEvent(userID, users) {
         }
     }
     return false;
+}
+
+function hasExpired(expirationDate) {
+    console.log(new Date().valueOf());
+    console.log(expirationDate);
+
+    return new Date().valueOf() > expirationDate;
 }
