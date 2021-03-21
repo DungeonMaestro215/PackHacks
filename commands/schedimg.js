@@ -21,12 +21,149 @@ module.exports = {
         if (!users[msg.author.id]) {
             users[msg.author.id] = {};
         }
+        if (users[msg.author.id]["schedule"] == undefined) { 
+            // Creates schedule object
+            users[msg.author.id]["schedule"] = {};
+        }
 
-        let schedData = users[msg.author.id]["schedule"];
+        let schedule = {
+            "Monday": [],
+            "Tuesday": [],
+            "Wednesday": [],
+            "Thursday": [],
+            "Friday": [],
+            "Saturday": [],
+            "Sunday": []
+        }
+
+        if (args.length !== 0) {
+            let keys = Object.keys(users);
+            for (let i = 0; i < keys.length; i++) {
+                if (users[keys[i]]['username'] == args[0]) {
+                    id = keys[i];
+                }
+            }
+        } else {
+            id = msg.author.id;
+        }
+
+        let schedData;
+        try {
+            schedData = users[id]["schedule"];
+        } catch (e) {
+            msg.channel.send("Selected user does not exist.");
+        }
+
         let schedDataKeys = Object.keys(schedData);
+
+        let counter = 1
+        schedDataKeys.forEach(event => {
+            schedData[event]['val'] = counter;
+            counter = (counter + 1) % 8;        // We have 8 color options
+        });
+        for (let i = 0; i < schedDataKeys.length; i++) {
+            for (let j = 0; j < schedData[schedDataKeys[i]].length; j++) {
+                let day = schedData[schedDataKeys[i]][j]["day"].toLowerCase();
+                day = day.charAt(0).toUpperCase() + day.slice(1);
+                schedule[day].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end, "val":schedData[schedDataKeys[i]]['val'] });
+            }
+        }
+
+        /*
+                <li class="events-group">
+                    <div class="top-info"><span>Tuesday</span></div>
+
+                    <ul>
+                        <li class="single-event" data-start="10:00" data-end="11:00" data-content="event-rowing-workout"
+                            data-event="event-2">
+                            <a href="#0">
+                                <em class="event-name">Rowing Workout</em>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+        */
+        
+        let output = "";
+        Object.keys(schedule).forEach(day => {
+            output += `
+                <li class="events-group">
+                    <div class="top-info"><span>${day}</span></div>
+
+                    <ul>
+                    `;
+
+            schedule[day].forEach(event => {
+                let start = event["Start Time"].toString()
+                start = start.slice(0, start.length - 2) + ":" + start.slice(start.length -2);
+                let end = event["End Time"].toString()
+                end = end.slice(0, end.length - 2) + ":" + end.slice(end.length -2);
+                let val = event["val"];
+
+                output += `
+                    <li class="single-event" data-start="${start}" data-end="${end}" data-content="event-${event["Class"]}"
+                        data-event="event-${val}">
+                        <a href="#0">
+                            <em class="event-name">${event["Class"]}</em>
+                        </a>
+                    </li>
+                `;
+            });
+
+            output += `
+                    </ul>
+                </li>
+                `;
+        });
+
+        // How many hours to include?
+        let timeLayout;
+        if (args.includes('24-hour')) {
+            timeLayout = `
+                <li><span>00:00</span></li>
+                <li><span>01:30</span></li>
+                <li><span>03:00</span></li>
+                <li><span>04:30</span></li>
+                <li><span>06:00</span></li>
+                <li><span>07:30</span></li>
+                <li><span>09:00</span></li>
+                <li><span>10:30</span></li>
+                <li><span>12:00</span></li>
+                <li><span>13:30</span></li>
+                <li><span>15:00</span></li>
+                <li><span>16:30</span></li>
+                <li><span>18:00</span></li>
+                <li><span>19:30</span></li>
+                <li><span>21:00</span></li>
+                <li><span>22:30</span></li>
+                <li><span>24:00</span></li>`
+        } else {
+            timeLayout = `
+                <li><span>06:00</span></li>
+                <li><span>07:00</span></li>
+                <li><span>08:00</span></li>
+                <li><span>09:00</span></li>
+                <li><span>10:00</span></li>
+                <li><span>11:00</span></li>
+                <li><span>12:00</span></li>
+                <li><span>13:00</span></li>
+                <li><span>14:00</span></li>
+                <li><span>15:00</span></li>
+                <li><span>16:00</span></li>
+                <li><span>17:00</span></li>
+                <li><span>18:00</span></li>
+                <li><span>19:00</span></li>
+                <li><span>20:00</span></li>
+                <li><span>21:00</span></li>
+                <li><span>22:00</span></li>`
+        }
 
         nodeHtmlToImage({
             output: './image.png',
+            puppeteerArgs: { 'defaultViewport': {
+                'width': 1000,
+                'height': 10000
+            }},
             html: `
 <!DOCTYPE html>
 <html lang="en">
@@ -389,26 +526,51 @@ module.exports = {
     margin-bottom: .2em;
   }
   
-  .cd-schedule .single-event[data-event="event-1"],
-  .cd-schedule [data-event="event-1"] .header-bg {
+  .cd-schedule .single-event[data-event="event-0"],
+  .cd-schedule [data-event="event-0"] .header-bg {
     /* this is used to set a background color for the event and the modal window */
     background: #577F92;
   }
   
+  .cd-schedule .single-event[data-event="event-1"],
+  .cd-schedule [data-event="event-1"] .header-bg {
+    background: #443453;
+  }
+  
   .cd-schedule .single-event[data-event="event-2"],
   .cd-schedule [data-event="event-2"] .header-bg {
-    background: #443453;
+    background: #A2B9B2;
   }
   
   .cd-schedule .single-event[data-event="event-3"],
   .cd-schedule [data-event="event-3"] .header-bg {
-    background: #A2B9B2;
-  }
+    background: #f6b067;
+   }
+
+  .cd-schedule .single-event[data-event="event-4"],
+  .cd-schedule [data-event="event-4"] .header-bg {
+    background: #FF7477;
+   }
   
   .cd-schedule .single-event[data-event="event-4"],
   .cd-schedule [data-event="event-4"] .header-bg {
+    background: #E69597;
+   }
+
+  .cd-schedule .single-event[data-event="event-5"],
+  .cd-schedule [data-event="event-5"] .header-bg {
+    background: #B27C66;
+   }
+  
+  .cd-schedule .single-event[data-event="event-6"],
+  .cd-schedule [data-event="event-6"] .header-bg {
+    background: #F39B6D;
+   }
+  
+  .cd-schedule .single-event[data-event="event-7"],
+  .cd-schedule [data-event="event-7"] .header-bg {
     background: #f6b067;
-  }
+   }
   
   .cd-schedule .event-modal {
     position: fixed;
@@ -692,237 +854,15 @@ module.exports = {
             href="https://codyhouse.co/gem/schedule-template/">https://codyhouse.co/gem/schedule-template/</a></p> -->
     <div class="cd-schedule loading">
         <div class="timeline">
-            <ul>
-                <li><span>09:00</span></li>
-                <li><span>09:30</span></li>
-                <li><span>10:00</span></li>
-                <li><span>10:30</span></li>
-                <li><span>11:00</span></li>
-                <li><span>11:30</span></li>
-                <li><span>12:00</span></li>
-                <li><span>12:30</span></li>
-                <li><span>13:00</span></li>
-                <li><span>13:30</span></li>
-                <li><span>14:00</span></li>
-                <li><span>14:30</span></li>
-                <li><span>15:00</span></li>
-                <li><span>15:30</span></li>
-                <li><span>16:00</span></li>
-                <li><span>16:30</span></li>
-                <li><span>17:00</span></li>
-                <li><span>17:30</span></li>
-                <li><span>18:00</span></li>
-            </ul>
+            <ul>` 
+            + timeLayout +
+            `</ul>
         </div> <!-- .timeline -->
 
         <div class="events">
             <ul class="wrap">
-                <li class="events-group">
-                    <div class="top-info"><span>Monday</span></div>
-                    <ul>
-                        <li class="single-event" data-start="09:30" data-end="10:30" data-content="event-abs-circuit"
-                            data-event="event-1">
-                            <a href="#0">
-                                <em class="event-name">Abs Circuit</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="11:00" data-end="12:30" data-content="event-rowing-workout"
-                            data-event="event-2">
-                            <a href="#0">
-                                <em class="event-name">Rowing Workout</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="14:00" data-end="15:15" data-content="event-yoga-1"
-                            data-event="event-3">
-                            <a href="#0">
-                                <em class="event-name">Yoga Level 1</em>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="events-group">
-                    <div class="top-info"><span>Tuesday</span></div>
-
-                    <ul>
-                        <li class="single-event" data-start="10:00" data-end="11:00" data-content="event-rowing-workout"
-                            data-event="event-2">
-                            <a href="#0">
-                                <em class="event-name">Rowing Workout</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="11:30" data-end="13:00"
-                            data-content="event-restorative-yoga" data-event="event-4">
-                            <a href="#0">
-                                <em class="event-name">Restorative Yoga</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="13:30" data-end="15:00" data-content="event-abs-circuit"
-                            data-event="event-1">
-                            <a href="#0">
-                                <em class="event-name">Abs Circuit</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="15:45" data-end="16:45" data-content="event-yoga-1"
-                            data-event="event-3">
-                            <a href="#0">
-                                <em class="event-name">Yoga Level 1</em>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="events-group">
-                    <div class="top-info"><span>Wednesday</span></div>
-
-                    <ul>
-                        <li class="single-event" data-start="09:00" data-end="10:15"
-                            data-content="event-restorative-yoga" data-event="event-4">
-                            <a href="#0">
-                                <em class="event-name">Restorative Yoga</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="10:45" data-end="11:45" data-content="event-yoga-1"
-                            data-event="event-3">
-                            <a href="#0">
-                                <em class="event-name">Yoga Level 1</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="12:00" data-end="13:45" data-content="event-rowing-workout"
-                            data-event="event-2">
-                            <a href="#0">
-                                <em class="event-name">Rowing Workout</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="13:45" data-end="15:00" data-content="event-yoga-1"
-                            data-event="event-3">
-                            <a href="#0">
-                                <em class="event-name">Yoga Level 1</em>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="events-group">
-                    <div class="top-info"><span>Thursday</span></div>
-
-                    <ul>
-                        <li class="single-event" data-start="09:30" data-end="10:30" data-content="event-abs-circuit"
-                            data-event="event-1">
-                            <a href="#0">
-                                <em class="event-name">Abs Circuit</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="12:00" data-end="13:45"
-                            data-content="event-restorative-yoga" data-event="event-4">
-                            <a href="#0">
-                                <em class="event-name">Restorative Yoga</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="15:30" data-end="16:30" data-content="event-abs-circuit"
-                            data-event="event-1">
-                            <a href="#0">
-                                <em class="event-name">Abs Circuit</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="17:00" data-end="18:30" data-content="event-rowing-workout"
-                            data-event="event-2">
-                            <a href="#0">
-                                <em class="event-name">Rowing Workout</em>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="events-group">
-                    <div class="top-info"><span>Friday</span></div>
-
-                    <ul>
-                        <li class="single-event" data-start="10:00" data-end="11:00" data-content="event-rowing-workout"
-                            data-event="event-2">
-                            <a href="#0">
-                                <em class="event-name">Rowing Workout</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="12:30" data-end="14:00" data-content="event-abs-circuit"
-                            data-event="event-1">
-                            <a href="#0">
-                                <em class="event-name">Abs Circuit</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="15:45" data-end="16:45" data-content="event-yoga-1"
-                            data-event="event-3">
-                            <a href="#0">
-                                <em class="event-name">Yoga Level 1</em>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="events-group">
-                    <div class="top-info"><span>Saturday</span></div>
-                    <ul>
-                        <li class="single-event" data-start="09:30" data-end="10:30" data-content="event-abs-circuit"
-                            data-event="event-1">
-                            <a href="#0">
-                                <em class="event-name">Abs Circuit</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="11:00" data-end="12:30" data-content="event-rowing-workout"
-                            data-event="event-2">
-                            <a href="#0">
-                                <em class="event-name">Rowing Workout</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="14:00" data-end="15:15" data-content="event-yoga-1"
-                            data-event="event-3">
-                            <a href="#0">
-                                <em class="event-name">Yoga Level 1</em>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li class="events-group">
-                    <div class="top-info"><span>Sunday</span></div>
-                    <ul>
-                        <li class="single-event" data-start="09:30" data-end="10:30" data-content="event-abs-circuit"
-                            data-event="event-1">
-                            <a href="#0">
-                                <em class="event-name">Abs Circuit</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="11:00" data-end="12:30" data-content="event-rowing-workout"
-                            data-event="event-2">
-                            <a href="#0">
-                                <em class="event-name">Rowing Workout</em>
-                            </a>
-                        </li>
-
-                        <li class="single-event" data-start="14:00" data-end="15:15" data-content="event-yoga-1"
-                            data-event="event-3">
-                            <a href="#0">
-                                <em class="event-name">Yoga Level 1</em>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+            ` + output + `
+            </ul>
         </div>
 
         <div class="event-modal">
@@ -1279,7 +1219,7 @@ jQuery(document).ready(function($){
         }).then(() => {
             // Send picture to chat
             const embed = new Discord.MessageEmbed()
-                .setTitle('Schedule')
+                .setTitle(users[id].username + '\' Schedule')
                 .attachFiles(['./image.png'])
                 .setImage('attachment://discord.png');
             msg.channel.send(embed);
@@ -1297,13 +1237,13 @@ let convertToTimeString = function (time) {
 
     formattedTime = formattedTime.toString();
 
-    console.log(formattedTime.length);
+    // console.log(formattedTime.length);
     if (formattedTime.length == 3) {
         formattedTime = formattedTime.substring(0, 1) + ':' + formattedTime.substring(1);
     } else if (formattedTime.length == 4) {
         formattedTime = formattedTime.substring(0, 2) + ':' + formattedTime.substring(2);
     }
-    console.log(formattedTime);
+    // console.log(formattedTime);
 
     if (pm) {
         formattedTime += ' PM';

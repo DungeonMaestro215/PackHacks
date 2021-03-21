@@ -83,7 +83,7 @@ module.exports = {
             }
         }
 
-        let mondayField = "Nothing", tuesdayField = "Nothing", wednesdayField = "Nothing", thursdayField = "Nothing", fridayField = "Nothing", saturdayField = "Nothing", sundayField = "Nothing";
+        // let mondayField = "Nothing", tuesdayField = "Nothing", wednesdayField = "Nothing", thursdayField = "Nothing", fridayField = "Nothing", saturdayField = "Nothing", sundayField = "Nothing";
         let fields = {
             "Monday": "Nothing",
             "Tuesday": "Nothing",
@@ -96,7 +96,7 @@ module.exports = {
 
         Object.keys(schedule).forEach(day => {
             for (let i = 0; i < schedule[day].length; i++) {
-                if (i === 0) mondayField = "";
+                if (i === 0) fields[day] = "";
                 fields[day] += schedule[day][i]['Class'] + '\n';
                 fields[day] += 'Start: ' + convertToTimeString(schedule[day][i]['Start Time']) + '\n';
                 fields[day] += 'End: ' + convertToTimeString(schedule[day][i]['End Time']) + '\n\n';
