@@ -59,7 +59,7 @@ module.exports = {
         let counter = 1
         schedDataKeys.forEach(event => {
             schedData[event]['val'] = counter;
-            counter = (counter + 1) % 4;
+            counter = (counter + 1) % 8;        // We have 8 color options
         });
         for (let i = 0; i < schedDataKeys.length; i++) {
             for (let j = 0; j < schedData[schedDataKeys[i]].length; j++) {
@@ -545,7 +545,32 @@ module.exports = {
   .cd-schedule .single-event[data-event="event-3"],
   .cd-schedule [data-event="event-3"] .header-bg {
     background: #f6b067;
-  }
+   }
+
+  .cd-schedule .single-event[data-event="event-4"],
+  .cd-schedule [data-event="event-4"] .header-bg {
+    background: #FF7477;
+   }
+  
+  .cd-schedule .single-event[data-event="event-4"],
+  .cd-schedule [data-event="event-4"] .header-bg {
+    background: #E69597;
+   }
+
+  .cd-schedule .single-event[data-event="event-5"],
+  .cd-schedule [data-event="event-5"] .header-bg {
+    background: #B27C66;
+   }
+  
+  .cd-schedule .single-event[data-event="event-6"],
+  .cd-schedule [data-event="event-6"] .header-bg {
+    background: #F39B6D;
+   }
+  
+  .cd-schedule .single-event[data-event="event-7"],
+  .cd-schedule [data-event="event-7"] .header-bg {
+    background: #f6b067;
+   }
   
   .cd-schedule .event-modal {
     position: fixed;
