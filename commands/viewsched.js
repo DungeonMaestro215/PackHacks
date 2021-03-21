@@ -21,7 +21,11 @@ module.exports = {
 
         // If the user doesn't have a spot, make one
         if (!users[msg.author.id]) {
-            users[msg.author.id] = {};
+            users[msg.author.id] = {"username": msg.author.username, "schedule": {}};
+        }
+        if (users[msg.author.id]["schedule"] == undefined) { 
+            // Creates schedule object
+            users[msg.author.id]["schedule"] = {};
         }
 
         let schedule = {
@@ -34,25 +38,43 @@ module.exports = {
             "Sunday": []
         }
 
-        let schedData = users[msg.author.id]["schedule"];
+
+        if (args.length !== 0) {
+            let keys = Object.keys(users);
+            for (let i = 0; i < keys.length; i++) {
+                if (users[keys[i]]['username'] == args[0]) {
+                    id = keys[i];
+                }
+            }
+        } else {
+            id = msg.author.id;
+        }
+
+        let schedData;
+        try {
+            schedData = users[id]["schedule"];
+        } catch (e) {
+            msg.channel.send("Selected user does not exist.");
+        }
+
         let schedDataKeys = Object.keys(schedData);
 
         for (let i = 0; i < schedDataKeys.length; i++) {
             for (let j = 0; j < schedData[schedDataKeys[i]].length; j++) {
                 if (schedData[schedDataKeys[i]][j]["day"] == 'MONDAY') {
-                    schedule["Monday"].push({"Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end})
+                    schedule["Monday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
                 } else if (schedData[schedDataKeys[i]][j]["day"] == ('TUESDAY')) {
-                    schedule["Tuesday"].push({"Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end})
+                    schedule["Tuesday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
                 } else if (schedData[schedDataKeys[i]][j]["day"] == ('WEDNESDAY')) {
-                    schedule["Wednesday"].push({"Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end})
+                    schedule["Wednesday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
                 } else if (schedData[schedDataKeys[i]][j]["day"] == ('THURSDAY')) {
-                    schedule["Thursday"].push({"Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end})
+                    schedule["Thursday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
                 } else if (schedData[schedDataKeys[i]][j]["day"] == ('FRIDAY')) {
-                    schedule["Friday"].push({"Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end})
+                    schedule["Friday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
                 } else if (schedData[schedDataKeys[i]][j]["day"] == ('SATURDAY')) {
-                    schedule["Saturday"].push({"Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end})
+                    schedule["Saturday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
                 } else if (schedData[schedDataKeys[i]][j]["day"] == ('SUNDAY')) {
-                    schedule["Sunday"].push({"Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end})
+                    schedule["Sunday"].push({ "Class": schedDataKeys[i], "Start Time": schedData[schedDataKeys[i]][j].start, "End Time": schedData[schedDataKeys[i]][j].end })
                 }
             }
         }
@@ -62,8 +84,8 @@ module.exports = {
         for (let i = 0; i < schedule['Monday'].length; i++) {
             if (i === 0) mondayField = "";
             mondayField += schedule['Monday'][i]['Class'] + '\n';
-            mondayField += 'Start Time: ' + convertToTimeString(schedule['Monday'][i]['Start Time']) + '\n';
-            mondayField += 'End Time: ' + convertToTimeString(schedule['Monday'][i]['End Time']) + '\n\n';
+            mondayField += 'Start: ' + convertToTimeString(schedule['Monday'][i]['Start Time']) + '\n';
+            mondayField += 'End: ' + convertToTimeString(schedule['Monday'][i]['End Time']) + '\n\n';
         }
         for (let i = 0; i < schedule['Tuesday'].length; i++) {
             if (i === 0) tuesdayField = "";
@@ -101,21 +123,21 @@ module.exports = {
             sundayField += 'Start: ' + convertToTimeString(schedule['Sunday'][i]['End Time']) + '\n';
             sundayField += 'End: ' + convertToTimeString(schedule['Sunday'][i]['End Time']) + '\n\n';
         }
-        
+
 
         const exampleEmbed = new Discord.MessageEmbed()
             .setColor('#0099ff')
-            .setTitle(msg.author.username + '\'s Schedule')
+            .setTitle(users[id]['username'] + '\'s Schedule')
             .addFields(
-                { name: 'Monday: ', value: mondayField},
-                { name: 'Tuesday', value: tuesdayField},
-                { name: 'Wednesday', value: wednesdayField},
-                { name: 'Thursday', value: thursdayField},
-                { name: 'Friday', value: fridayField},
-                { name: 'Saturday', value: saturdayField},
-                { name: 'Sunday', value: sundayField},
+                { name: 'Monday: ', value: mondayField },
+                { name: 'Tuesday', value: tuesdayField },
+                { name: 'Wednesday', value: wednesdayField },
+                { name: 'Thursday', value: thursdayField },
+                { name: 'Friday', value: fridayField },
+                { name: 'Saturday', value: saturdayField },
+                { name: 'Sunday', value: sundayField },
             )
-            // .addField('Inline field title', 'Some value here', true)
+        // .addField('Inline field title', 'Some value here', true)
 
         msg.channel.send(exampleEmbed);
 
@@ -147,7 +169,7 @@ module.exports = {
     }
 }
 
-let convertToTimeString = function(time) {
+let convertToTimeString = function (time) {
     let pm = false, formattedTime = time;
 
     if (formattedTime > 1299) {
@@ -159,9 +181,9 @@ let convertToTimeString = function(time) {
 
     console.log(formattedTime.length);
     if (formattedTime.length == 3) {
-        formattedTime = formattedTime.substring(0,1) + ':' + formattedTime.substring(1);
+        formattedTime = formattedTime.substring(0, 1) + ':' + formattedTime.substring(1);
     } else if (formattedTime.length == 4) {
-        formattedTime = formattedTime.substring(0,2) + ':' + formattedTime.substring(2);
+        formattedTime = formattedTime.substring(0, 2) + ':' + formattedTime.substring(2);
     }
     console.log(formattedTime);
 
