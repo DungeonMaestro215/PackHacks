@@ -17,6 +17,12 @@ module.exports = {
         const sched = users[msg.author.id].schedule;
         const events = Object.keys(sched);
 
+        // Does the user have events?
+        if (sched == undefined || events.lengths == 0) {
+            msg.channel.send("You have no events.");
+            return;
+        }
+
         if (args.length == 0) {
             // Print all of the user's events w/ numbers
             let output = '```';
@@ -44,6 +50,12 @@ module.exports = {
                 idx++;
             });
         });
+
+        // Was that a valid argument?
+        if (args[0] >= enumeration.length) {
+            msg.channel.send("Unsuccessful. That was not a valid input.");
+            return;
+        }
 
         sched[enumeration[args[0]].name].splice([enumeration[args[0]].index], 1);
         msg.channel.send('Successfully deleted event.');
