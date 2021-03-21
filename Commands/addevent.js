@@ -29,7 +29,7 @@ module.exports = {
         // If the user doesn't have a spot, make one
         console.log(users[msg.author.id]);
         if (!users[msg.author.id]) {
-            users[msg.author.id] = {"schedule": {}};
+            users[msg.author.id] = {"username": msg.author.username, "schedule": {}};
         }
         // console.log(users[msg.author.id]);
         // console.log(users[msg.author.id]["schedule"]);

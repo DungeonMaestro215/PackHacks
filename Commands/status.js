@@ -2,11 +2,11 @@ const fs = require('fs');
 const filename = "./users.json";
 
 // status
-// displays the status of a specefied user
+// displays the status of a specified user
 module.exports = {
     name: 'status',
     alias: ['Status'],
-    description: 'Displays the status of a specefied user',
+    description: 'Displays the status of a specified user',
     args: false,
     usage: '<user>',
     cooldown: 1,
